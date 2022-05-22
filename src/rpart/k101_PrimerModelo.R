@@ -7,7 +7,7 @@ require("rpart")
 require("rpart.plot")
 
 #Aqui se debe poner la carpeta de SU computadora local
-setwd("D:\\gdrive\\ITBA2022A\\")  #Establezco el Working Directory
+setwd("C:/Users/HP/Desktop/ECD/MDD/")  #Establezco el Working Directory
 
 #cargo los datos de 202011 que es donde voy a ENTRENAR el modelo
 dtrain  <- fread("./datasets/paquete_premium_202011.csv")
@@ -17,9 +17,9 @@ modelo  <- rpart("clase_ternaria ~ .",  #quiero predecir clase_ternaria a partir
                  data = dtrain,
                  xval=0,
                  cp=        -0.3,   #esto significa no limitar la complejidad de los splits
-                 minsplit=  80,     #minima cantidad de registros para que se haga el split
-                 minbucket=  1,     #tamaño minimo de una hoja
-                 maxdepth=   4 )    #profundidad maxima del arbol
+                 minsplit=  1803,     #minima cantidad de registros para que se haga el split
+                 minbucket=  667,     #tamaño minimo de una hoja
+                 maxdepth=   14 )    #profundidad maxima del arbol
 
 
 #grafico el arbol
@@ -52,5 +52,5 @@ dir.create( "./labo/exp/" )
 dir.create( "./labo/exp/KA2001" ) 
 
 fwrite( entrega, 
-        file= "./labo/exp/KA2001/K101_001.csv", 
+        file= "./labo/exp/KA2001/K101_003.csv", 
         sep= "," )

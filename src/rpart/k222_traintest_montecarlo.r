@@ -56,7 +56,7 @@ ArbolEstimarGanancia  <- function( semilla, param_basicos )
 #------------------------------------------------------------------------------
 
 #Aqui se debe poner la carpeta de la computadora local
-setwd("D:\\gdrive\\ITBA2022A\\")   #Establezco el Working Directory
+setwd("C:\\Users\\HP\\Desktop\\ECD\\MDD")   #Establezco el Working Directory
 #cargo los datos
 
 dataset  <- fread("./datasets/paquete_premium_202011.csv")
