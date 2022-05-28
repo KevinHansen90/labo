@@ -1,0 +1,234 @@
+#Intento de Solucion del desafio  15k
+#que NO logra solucionarlo, una que falta una idea fundamental, una chispa, un Momento Eureka
+#pero crea estructura sobre la cual trabajar
+
+#limpio la memoria
+rm( list=ls() )
+gc()
+
+require("data.table")
+require("rlist")
+require("yaml")
+
+require("parallel")
+
+#paquetes necesarios para la Bayesian Optimization
+require("DiceKriging")
+require("mlrMBO")
+
+kBO_iter  <- 100   #cantidad de iteraciones de la Optimizacion Bayesiana
+
+ksemilla_azar  <- 111599  #Aqui poner la propia semilla
+
+#Estructura que define los hiperparámetros y sus rangos
+hs  <- makeParamSet(
+  makeIntegerParam("num.rondas" ,        lower=  1L, upper= 10L),  #la letra L al final significa ENTERO
+  makeIntegerParam("t1",         lower=    10L, upper=   140L),  # 0 significa profundidad infinita
+  makeIntegerParam("t2",         lower=    0L, upper=   140L),
+  makeIntegerParam("t3",         lower=    0L, upper=   140L),
+  makeIntegerParam("t4",         lower=    0L, upper=   140L),
+  makeIntegerParam("t5",         lower=    0L, upper=   140L),
+  makeIntegerParam("t6",         lower=    0L, upper=   140L),
+  makeIntegerParam("t7",         lower=    0L, upper=   140L),
+  makeIntegerParam("t8",         lower=    0L, upper=   140L),
+  makeIntegerParam("t9",         lower=    0L, upper=   140L),
+  makeIntegerParam("t10",         lower=    0L, upper=   140L)
+  #,forbidden=expression(t2 > num.rondas-1,t3 > num.rondas-2,t4 > num.rondas-3,t5 > num.rondas-4,t6 > num.rondas-5,t7 > num.rondas-6,t8 > num.rondas-7,t9 > num.rondas-8,t10 > num.rondas-9)
+  )
+
+#------------------------------------------------------------------------------
+#graba a un archivo los componentes de lista
+#para el primer registro, escribe antes los titulos
+
+loguear  <- function( reg, arch=NA, folder="./work/", ext=".txt", verbose=TRUE )
+{
+  archivo  <- arch
+  if( is.na(arch) )  archivo  <- paste0(  folder, substitute( reg ), ext )
+  
+  if( !file.exists( archivo ) )  #Escribo los titulos
+  {
+    linea  <- paste0( "fecha\t", 
+                      paste( list.names(reg), collapse="\t" ), "\n" )
+    
+    cat( linea, file= archivo )
+  }
+  
+  linea  <- paste0( format(Sys.time(), "%Y%m%d %H%M%S"),  "\t",     #la fecha y hora
+                    gsub( ", ", "\t", toString( reg ) ),  "\n" )
+  
+  cat( linea, file= archivo, append= TRUE )  #grabo al archivo
+  
+  if( verbose )  cat( linea )   #imprimo por pantalla
+}
+
+#------------------------------------------------------------------------------
+#función de tirar
+ftirar  <- function( prob, qty )
+{
+  return( sum( runif(qty) < prob ) )
+}
+
+
+#variables globales que usan las funciones gimnasio_xxxx
+GLOBAL_jugadores  <- c()
+GLOBAL_tiros_total  <- 0
+
+#Crea el juego
+#a cada jugador se le pone un numero de 1 a 100 en la espalda
+#debajo de ese numero esta el indice_de_enceste  que NO puede ser visto por el cazatalentos
+gimnasio_init  <- function() 
+{
+  GLOBAL_jugadores  <<-  sample( c( (501:599 )/1000 , 0.7 ) )
+  GLOBAL_tiros_total  <<- 0
+}
+
+
+#se le pasa un vector con los IDs de los jugadores y la cantidad de tiros a realizar
+#devuelve en un vector cuantos aciertos tuvo cada jugador
+gimnasio_tirar  <- function(  pids,  pcantidad )
+{
+  GLOBAL_tiros_total  <<-  GLOBAL_tiros_total + length( pids )*pcantidad
+  res  <- mapply( ftirar, GLOBAL_jugadores[pids], pcantidad )
+  
+  return( res )
+}
+
+
+#El cazatalentos decide a que jugador llevarse
+#devuelve la cantidad de tiros libres y si le acerto al verdadero_mejor o no
+gimnasio_veredicto  <- function( pid )
+{
+  return( list("tiros_total"= GLOBAL_tiros_total, 
+               "acierto"=     as.integer( GLOBAL_jugadores[pid]==0.7) ))
+}
+#------------------------------------------------------------------------------
+
+Estrategia_K  <- function(x)
+{
+  gimnasio_init()
+  planilla_cazatalentos  <- data.table( "id"= 1:100 )
+  ids_juegan <- 1:100   #los jugadores que participan en la ronda
+  planilla_cazatalentos  <-planilla_cazatalentos[ ids_juegan,  tiros:= 0]
+  planilla_cazatalentos  <-planilla_cazatalentos[ ids_juegan,  aciertos:= 0]
+  #num.tiros <- c(19,31,90,11,132,73,10,108,67,32)
+  #num.rondas <- 5
+  
+  num.tiros <- c(x$t1,x$t2,x$t3,x$t4,x$t5,x$t6,x$t7,x$t8,x$t9,x$t10)
+  num.rondas <- x$num.rondas
+  
+  for (i in 1:num.rondas)
+  {
+    if(num.tiros[i]*length(ids_juegan)+GLOBAL_tiros_total>15000)
+      #num.tiros[i] <- 0
+      next
+    resultado  <- gimnasio_tirar( ids_juegan, num.tiros[i])
+    planilla_cazatalentos  <- planilla_cazatalentos[ ids_juegan,  tiros:= tiros+num.tiros[i]]  #registro en la planilla
+    planilla_cazatalentos  <- planilla_cazatalentos[ ids_juegan,  aciertos:= aciertos+resultado]  #registro en la planilla
+    media  <- planilla_cazatalentos[ ids_juegan, mean(aciertos) ]
+    ids_juegan  <- planilla_cazatalentos[ ids_juegan ][ aciertos >= media, id ]
+  }                
+  #Epilogo
+  
+  #El cazatalentos toma una decision, elige al que mas aciertos tuvo en la ronda
+  pos_mejor <-  planilla_cazatalentos[ , which.max(aciertos) ]
+  id_mejor  <-  planilla_cazatalentos[ pos_mejor, id ]
+  
+  #Finalmente, la hora de la verdadero_mejor
+  #Termino el juego
+  veredicto  <- gimnasio_veredicto( id_mejor )
+  
+  return( veredicto )
+  } 
+  
+#------------------------------------------------------------------------------
+
+  ganador  <- function(x)
+  {
+  GLOBAL_iteracion  <<- GLOBAL_iteracion + 1
+  tabla_veredictos  <- data.table(  tiros_total=integer(),  acierto=integer() )
+  
+  for( experimento  in  1:10000 )
+  {
+    if( experimento %% 1000 == 0 )  cat( experimento, " ")  #desprolijo, pero es para saber por donde voy
+    
+    veredicto  <- Estrategia_K(x)
+    
+    tabla_veredictos  <- rbind( tabla_veredictos, veredicto )
+  }
+  
+  cat("\n")
+  
+  tiros_total  <-  tabla_veredictos[  , max(tiros_total) ]
+  tasa_eleccion_correcta  <-  tabla_veredictos[  , mean(acierto) ]
+  
+  #logueo
+  
+  xx  <- x
+  xx$tasa_eleccion_correcta  <- tasa_eleccion_correcta
+  xx$iteracion  <- GLOBAL_iteracion
+  loguear( xx, arch= klog )
+  
+  return(tasa_eleccion_correcta)
+  } 
+  
+  
+
+#------------------------------------------------------------------------------
+
+  #Aqui comienza el programa
+  
+  #Aqui se debe poner la carpeta de la computadora local
+  setwd("C:/Users/HP/Desktop/ECD/MDD/")   #Establezco el Working Directory
+  
+  #creo la carpeta donde va el experimento
+  # HT  representa  Hiperparameter Tuning
+  dir.create( "./labo/exp/",  showWarnings = FALSE ) 
+  dir.create( "./labo/exp/prueba/", showWarnings = FALSE )
+  setwd("C:/Users/HP/Desktop/ECD/MDD/labo/exp/prueba/")   #Establezco el Working Directory DEL EXPERIMENTO
+  
+  #en estos archivos quedan los resultados
+  kbayesiana  <- "prueba.RDATA"
+  klog        <- "prueba.txt"
+  
+  
+  GLOBAL_iteracion  <- 0   #inicializo la variable global
+  
+  #si ya existe el archivo log, traigo hasta donde llegue
+  if( file.exists(klog) )
+  {
+    tabla_log  <- fread( klog )
+    GLOBAL_iteracion  <- nrow( tabla_log )
+  }
+  
+  
+
+set.seed(ksemilla_azar)  #debe ir una sola vez, ANTES de los experimentos
+
+
+#Aqui comienza la configuracion de la Bayesian Optimization
+
+configureMlr( show.learner.output = FALSE)
+
+funcion_optimizar  <- ganador
+
+#configuro la busqueda bayesiana,  los hiperparametros que se van a optimizar
+#por favor, no desesperarse por lo complejo
+obj.fun  <- makeSingleObjectiveFunction(
+  fn=       funcion_optimizar,
+  minimize= FALSE,   #estoy Maximizando la ganancia
+  noisy=    TRUE,
+  par.set=  hs,
+  has.simple.signature = FALSE
+)
+
+ctrl  <- makeMBOControl( save.on.disk.at.time= 600,  save.file.path= kbayesiana)
+ctrl  <- setMBOControlTermination(ctrl, iters= kBO_iter )
+ctrl  <- setMBOControlInfill(ctrl, crit= makeMBOInfillCritEI())
+
+surr.km  <-  makeLearner("regr.km", predict.type= "se", covtype= "matern3_2", control= list(trace= TRUE))
+
+#inicio la optimizacion bayesiana
+if(!file.exists(kbayesiana)) {
+  run  <- mbo(obj.fun, learner = surr.km, control = ctrl)
+} else  run  <- mboContinue( kbayesiana )   #retomo en caso que ya exista
+
