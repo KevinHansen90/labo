@@ -23,16 +23,19 @@ require("DiceKriging")
 require("mlrMBO")
 
 
-kBO_iter  <- 100   #cantidad de iteraciones de la Optimizacion Bayesiana
+kBO_iter  <- 250   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet( 
-         makeNumericParam("learning_rate",    lower=  0.01 , upper=     0.3),
-         makeNumericParam("feature_fraction", lower=  0.2  , upper=     1.0),
-         makeIntegerParam("min_data_in_leaf", lower=  1    , upper= 20000),
-         makeIntegerParam("num_leaves",       lower= 16L   , upper=  2048),
-         makeNumericParam("prob_corte",       lower= 1/120 , upper=  1/20)  #esto sera visto en clase en gran detalle
-        )
+  makeNumericParam("learning_rate",    lower=  0.001 , upper=    0.02),
+  makeNumericParam("feature_fraction", lower=  0.1  , upper=    0.5),
+  makeIntegerParam("min_data_in_leaf", lower=  0    , upper= 8000),
+  makeIntegerParam("num_leaves",       lower= 500L   , upper= 1500L),
+  makeNumericParam("prob_corte",       lower= 1/120 , upper=  1/20),
+  makeNumericParam("min_gain_to_split",lower= 0.001 , upper=  0.01),
+  makeNumericParam("lambda_l1",        lower=  0    , upper=   100),
+  makeNumericParam("lambda_l2",        lower=  0    , upper=   100)  #esto sera visto en clase en gran detalle
+)
 
 
 kprefijo       <- "HT601"
@@ -110,9 +113,9 @@ EstimarGanancia_lightgbm  <- function( x )
                           verbosity= -100,
                           seed= 111599,
                           max_depth=  -1,         # -1 significa no limitar,  por ahora lo dejo fijo
-                          min_gain_to_split= 0.0, #por ahora, lo dejo fijo
-                          lambda_l1= 0.0,         #por ahora, lo dejo fijo
-                          lambda_l2= 0.0,         #por ahora, lo dejo fijo
+                          #min_gain_to_split= 0.0, #por ahora, lo dejo fijo
+                          #lambda_l1= 0.0,         #por ahora, lo dejo fijo
+                          #lambda_l2= 0.0,         #por ahora, lo dejo fijo
                           max_bin= 31,            #por ahora, lo dejo fijo
                           num_iterations= 9999,    #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
