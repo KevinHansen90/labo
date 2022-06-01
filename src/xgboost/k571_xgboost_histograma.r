@@ -30,12 +30,15 @@ modelo  <- xgb.train( data= dtrain,
                       param= list( objective=       "binary:logistic",
                                    tree_method=     "hist",
                                    grow_policy=     "lossguide",
-                                   max_leaves=          20,
-                                   min_child_weight=    1,
-                                   eta=                 0.3,
-                                   colsample_bytree=    1.0
+                                   max_leaves=          2,
+                                   min_child_weight=    9,
+                                   eta=                 0.244501133093268,
+                                   colsample_bytree=    0.240853634370445,
+                                   max_depth=0,
+                                   scale_pos_weight=1,
+                                   max_bin=256
                                    ),
-                      nrounds= 34
+                      nrounds= 191
                     )
 
 #aplico el modelo a los datos sin clase
@@ -48,11 +51,11 @@ prediccion  <- predict( modelo,
 
 #Genero la entrega para Kaggle
 entrega  <- as.data.table( list( "numero_de_cliente"= dapply[  , numero_de_cliente],
-                                 "Predicted"= as.integer( prediccion > 1/60)  ) ) #genero la salida
+                                 "Predicted"= as.integer( prediccion > 0.018287258136874)  ) ) #genero la salida
 
 dir.create( "./labo/exp/",  showWarnings = FALSE ) 
 dir.create( "./labo/exp/KA5710/", showWarnings = FALSE )
-archivo_salida  <- "./labo/exp/KA5710/KA_571_001.csv"
+archivo_salida  <- "./labo/exp/KA5710/KA_571_003.csv"
 
 #genero el archivo para Kaggle
 fwrite( entrega, 

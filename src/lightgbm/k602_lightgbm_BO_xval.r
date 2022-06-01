@@ -1,4 +1,8 @@
-# vCPU  8,    RAM  16GB,   Espacio en Disco  256 GB
+#corre en la Google Cloud,  si el dataset de entrada es muy grande, debera poner mas memoria RAM
+#    8 vCPU
+#  128 GB  memoria RAM
+#  256 GB  espacio en disco
+
 
 # Este script esta pensado para correr en Google Cloud
 # Optimizacion Bayesiana de hiperparametros de  lightgbm, con el metodo TRADICIONAL de los hiperparametros originales de lightgbm
@@ -19,22 +23,31 @@ require("DiceKriging")
 require("mlrMBO")
 
 
-kBO_iter  <- 200   #cantidad de iteraciones de la Optimizacion Bayesiana
+kBO_iter  <- 100   #cantidad de iteraciones de la Optimizacion Bayesiana
 
 #Aqui se cargan los hiperparametros
 hs <- makeParamSet( 
-  makeNumericParam("learning_rate",    lower=  0.001 , upper=    0.02),
-  makeNumericParam("feature_fraction", lower=  0.1  , upper=    0.5),
-  makeIntegerParam("min_data_in_leaf", lower=  0    , upper= 8000),
-  makeIntegerParam("num_leaves",       lower= 500L   , upper= 1500L),
-  makeNumericParam("prob_corte",       lower= 1/120 , upper=  1/20),
-  makeIntegerParam("max_bin",          lower= 10 , upper=  50),
-  makeNumericParam("min_gain_to_split",lower= 0.001 , upper=  0.01),
-  makeNumericParam("lambda_l1",        lower=  0    , upper=   100),
-  makeNumericParam("lambda_l2",        lower=  0    , upper=   100)
-)
+         makeNumericParam("learning_rate",    lower=  0.01 , upper=     0.3),
+         makeNumericParam("feature_fraction", lower=  0.2  , upper=     1.0),
+         makeIntegerParam("min_data_in_leaf", lower=  1    , upper= 20000),
+         makeIntegerParam("num_leaves",       lower= 16L   , upper=  2048),
+         makeNumericParam("prob_corte",       lower= 1/120 , upper=  1/20)  #esto sera visto en clase en gran detalle
+        )
 
+
+kprefijo       <- "HT601"
 ksemilla_azar  <- 111599  #Aqui poner la propia semilla
+kdataset       <- "./datasets/paquete_premium_ext_001.csv.gz"
+
+#donde entrenar
+ktrain_mes_desde    <- 202009        #mes desde donde entreno
+ktrain_mes_hasta    <- 202011        #mes hasta donde entreno, inclusive
+ktrain_meses_malos  <- c( 202006 )   #meses a excluir del entrenamiento
+
+
+kexperimento   <- paste0( kprefijo, "0" )
+kbayesiana     <- "BO.RDATA"
+klog           <- "BO_log.txt"
 
 #------------------------------------------------------------------------------
 #graba a un archivo los componentes de lista
@@ -44,20 +57,20 @@ loguear  <- function( reg, arch=NA, folder="./exp/", ext=".txt", verbose=TRUE )
 {
   archivo  <- arch
   if( is.na(arch) )  archivo  <- paste0(  folder, substitute( reg), ext )
-  
+
   if( !file.exists( archivo ) )  #Escribo los titulos
   {
     linea  <- paste0( "fecha\t", 
                       paste( list.names(reg), collapse="\t" ), "\n" )
-    
+
     cat( linea, file=archivo )
   }
-  
+
   linea  <- paste0( format(Sys.time(), "%Y%m%d %H%M%S"),  "\t",     #la fecha y hora
                     gsub( ", ", "\t", toString( reg ) ),  "\n" )
-  
+
   cat( linea, file=archivo, append=TRUE )  #grabo al archivo
-  
+
   if( verbose )  cat( linea )   #imprimo por pantalla
 }
 #------------------------------------------------------------------------------
@@ -65,11 +78,11 @@ loguear  <- function( reg, arch=NA, folder="./exp/", ext=".txt", verbose=TRUE )
 fganancia_logistic_lightgbm   <- function( probs, datos) 
 {
   vlabels  <- get_field(datos, "label")
-  
-  gan  <- sum( (probs > prob_corte  ) *
-                 ifelse( vlabels== 1, 59000, -1000 ) )
-  
-  
+
+  gan  <- sum( (probs > PROB_CORTE  ) *
+               ifelse( vlabels== 1, 59000, -1000 ) )
+
+
   return( list( "name"= "ganancia", 
                 "value"=  gan,
                 "higher_better"= TRUE ) )
@@ -81,36 +94,35 @@ fganancia_logistic_lightgbm   <- function( probs, datos)
 EstimarGanancia_lightgbm  <- function( x )
 {
   gc()  #libero memoria
-  
+
   #llevo el registro de la iteracion por la que voy
   GLOBAL_iteracion  <<- GLOBAL_iteracion + 1
-  
-  prob_corte <<- x$prob_corte   #asigno la variable global
-  
+
+  PROB_CORTE <<- x$prob_corte   #asigno la variable global
+
   kfolds  <- 5   # cantidad de folds para cross validation
-  
+
   param_basicos  <- list( objective= "binary",
                           metric= "custom",
-                          boosting="gbdt", #agrego esto, por default va gbdt
                           first_metric_only= TRUE,
                           boost_from_average= TRUE,
                           feature_pre_filter= FALSE,
                           verbosity= -100,
                           seed= 111599,
                           max_depth=  -1,         # -1 significa no limitar,  por ahora lo dejo fijo
-                          #min_gain_to_split= 0.0, #por ahora, lo dejo fijo
-                          #lambda_l1= 0.0,         #por ahora, lo dejo fijo
-                          #lambda_l2= 0.0,         #por ahora, lo dejo fijo
-                          #max_bin= 31,            #por ahora, lo dejo fijo
+                          min_gain_to_split= 0.0, #por ahora, lo dejo fijo
+                          lambda_l1= 0.0,         #por ahora, lo dejo fijo
+                          lambda_l2= 0.0,         #por ahora, lo dejo fijo
+                          max_bin= 31,            #por ahora, lo dejo fijo
                           num_iterations= 9999,    #un numero muy grande, lo limita early_stopping_rounds
                           force_row_wise= TRUE    #para que los alumnos no se atemoricen con tantos warning
-  )
-  
+                        )
+
   #el parametro discolo, que depende de otro
   param_variable  <- list(  early_stopping_rounds= as.integer(50 + 5/x$learning_rate) )
-  
+
   param_completo  <- c( param_basicos, param_variable, x )
-  
+
   set.seed( 111599 )
   modelocv  <- lgb.cv( data= dtrain,
                        eval= fganancia_logistic_lightgbm,
@@ -118,27 +130,53 @@ EstimarGanancia_lightgbm  <- function( x )
                        nfold= kfolds,    #folds del cross validation
                        param= param_completo,
                        verbose= -100
-  )
-  
+                      )
+
   #obtengo la ganancia
   ganancia  <- unlist(modelocv$record_evals$valid$ganancia$eval)[ modelocv$best_iter ]
-  
+
   ganancia_normalizada  <-  ganancia* kfolds     #normailizo la ganancia
-  
+
   #el lenguaje R permite asignarle ATRIBUTOS a cualquier variable
   attr(ganancia_normalizada ,"extras" )  <- list("num_iterations"= modelocv$best_iter)  #esta es la forma de devolver un parametro extra
-  
+
   param_completo$num_iterations <- modelocv$best_iter  #asigno el mejor num_iterations
   param_completo["early_stopping_rounds"]  <- NULL     #elimino de la lista el componente  "early_stopping_rounds"
-  
+
+  #si es una ganancia superadora, genero e imprimo ESA importancia de variables
+  if( ganancia_normalizada > GLOBAL_ganancia )
+  {
+    GLOBAL_ganancia  <<- ganancia_normalizada
+    modelo  <-  lgb.train( data= dtrain,
+                           eval= fganancia_logistic_lightgbm,
+                           param= param_completo,
+                           verbose= -100
+                         )
+
+    tb_importancia  <-  as.data.table( lgb.importance(modelo) ) 
+    archivo_importancia  <- paste0( "impo_",  sprintf( "%03d", GLOBAL_iteracion ), ".txt" )
+
+    fwrite( tb_importancia, 
+            file= archivo_importancia, 
+           sep= "\t" )
+
+  }
+
   #logueo 
   xx  <- param_completo
   xx$ganancia  <- ganancia_normalizada   #le agrego la ganancia
-  xx$iteracion <- GLOBAL_iteracion
-  loguear( xx, arch= klog )
   
+  xx$experimento  <- kexperimento
+  xx$cols         <- ncol( dtrain )
+  xx$rows         <- nrow( dtrain )
+
+  xx$iteracion <- GLOBAL_iteracion
+
+  loguear( xx, arch= klog )
+
   return( ganancia )
 }
+#------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 #Aqui empieza el programa
 
@@ -146,41 +184,50 @@ EstimarGanancia_lightgbm  <- function( x )
 setwd("~/buckets/b1/")   #Establezco el Working Directory
 
 #cargo el dataset donde voy a entrenar el modelo
-dataset  <- fread("./datasets/paquete_premium_202011.csv.gz")
+dataset  <- fread( kdataset )
 
 #creo la carpeta donde va el experimento
 # HT  representa  Hiperparameter Tuning
 dir.create( "./exp/",  showWarnings = FALSE ) 
-dir.create( "./exp/HT5370/", showWarnings = FALSE )
-setwd("./exp/HT5370/")   #Establezco el Working Directory DEL EXPERIMENTO
+dir.create( paste0("./exp/", kexperimento, "/" ), showWarnings = FALSE )
+setwd( paste0("./exp/", kexperimento, "/" ) )   #Establezco el Working Directory DEL EXPERIMENTO
 
-
-#en estos archivos quedan los resultados
-kbayesiana  <- "HT537.RDATA"
-klog        <- "HT537.txt"
 
 
 GLOBAL_iteracion  <- 0   #inicializo la variable global
+GLOBAL_ganancia   <- 0
 
 #si ya existe el archivo log, traigo hasta donde llegue
 if( file.exists(klog) )
 {
   tabla_log  <- fread( klog )
   GLOBAL_iteracion  <- nrow( tabla_log )
+  GLOBAL_ganancia   <- tabla_log[ , max( ganancia ) ]
 }
 
 
-
 #paso la clase a binaria que tome valores {0,1}  enteros
-dataset[ , clase01 := ifelse( clase_ternaria %in%  c("BAJA+2","BAJA+1"), 1L, 0L) ] #reemplacé para que la clase sean las 2 bajas
+dataset[ , clase01 := ifelse( clase_ternaria=="BAJA+2", 1L, 0L) ]
 
 
 #los campos que se van a utilizar
 campos_buenos  <- setdiff( colnames(dataset), c("clase_ternaria","clase01") )
 
+
+#--------------------------------------
+#elijo donde voy a entrenar
+
+dataset[ , train  := 0L ]
+dataset[ foto_mes >= ktrain_mes_desde & 
+         foto_mes <= ktrain_mes_hasta &  
+         ! (foto_mes %in% ktrain_meses_malos ) ,
+         train  := 1L ]
+
+#--------------------------------------
+
 #dejo los datos en el formato que necesita LightGBM
-dtrain  <- lgb.Dataset( data= data.matrix(  dataset[ , campos_buenos, with=FALSE]),
-                        label= dataset$clase01 )
+dtrain  <- lgb.Dataset( data= data.matrix(  dataset[ train == 1L, campos_buenos, with=FALSE]),
+                        label= dataset[ train==1L, clase01]  )
 
 
 
@@ -192,12 +239,12 @@ configureMlr( show.learner.output= FALSE)
 #configuro la busqueda bayesiana,  los hiperparametros que se van a optimizar
 #por favor, no desesperarse por lo complejo
 obj.fun  <- makeSingleObjectiveFunction(
-  fn=       funcion_optimizar, #la funcion que voy a maximizar
-  minimize= FALSE,   #estoy Maximizando la ganancia
-  noisy=    TRUE,
-  par.set=  hs,     #definido al comienzo del programa
-  has.simple.signature = FALSE   #paso los parametros en una lista
-)
+              fn=       funcion_optimizar, #la funcion que voy a maximizar
+              minimize= FALSE,   #estoy Maximizando la ganancia
+              noisy=    TRUE,
+              par.set=  hs,     #definido al comienzo del programa
+              has.simple.signature = FALSE   #paso los parametros en una lista
+             )
 
 ctrl  <- makeMBOControl( save.on.disk.at.time= 600,  save.file.path= kbayesiana)  #se graba cada 600 segundos
 ctrl  <- setMBOControlTermination(ctrl, iters= kBO_iter )   #cantidad de iteraciones
@@ -216,6 +263,3 @@ if( !file.exists( kbayesiana ) ) {
 
 quit( save="no" )
 
-
-# pero nosotros  NO nos vamos a quedar tranquilos sin cuestionar los hiperparametros originales
-# min_data_in_leaf  y  num_leaves   estan relacionados entre ellos
