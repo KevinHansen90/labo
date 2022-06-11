@@ -20,22 +20,11 @@ require("ranger")
 setwd( "~/buckets/b1/" )  #cambiar por la carpeta local
 
 #leo el dataset
-dataset_grande  <- fread( "./datasets/paquete_premium.csv.gz", stringsAsFactors= TRUE)
+dataset  <- fread( "./datasets/paquete_premium.csv.gz", stringsAsFactors= TRUE)
 
 #me quedo SOLO con los BAJA+2
-dataset  <- copy( dataset_grande[  clase_ternaria =="BAJA+2"  & foto_mes>=202001  & foto_mes<=202011, ] )
-
-#armo el dataset de los 12 meses antes de la muerte de los registros que analizo
-dataset12  <- copy( dataset_grande[  numero_de_cliente %in%  dataset[ , unique(numero_de_cliente)]  ]  )
-
-#asigno para cada registro cuantos meses faltan para morir
-setorderv( dataset12, c("numero_de_cliente", "foto_mes"), c(1,-1) )
-dataset12[  , pos := seq(.N) , numero_de_cliente ]
-
-#me quedo solo con los 12 meses antes de morir
-dataset12  <- dataset12[  pos <= 12 , ]
+dataset  <- dataset[  clase_ternaria =="BAJA+2"  & foto_mes>=202001  & foto_mes<=202011, ]
 gc()
-
 
 #quito los nulos para que se pueda ejecutar randomForest,  Dios que algoritmo prehistorico ...
 dataset  <- na.roughfix( dataset )
@@ -104,12 +93,12 @@ hclust.rf  <- hclust( as.dist ( 1.0 - modelo$proximity),  #distancia = 1.0 - pro
 
 #primero, creo la carpeta donde van los resultados
 dir.create( "./exp/", showWarnings= FALSE )
-dir.create( "./exp/ST7620", showWarnings= FALSE )
-setwd( "~/buckets/b1/exp/ST7620" )
+dir.create( "./exp/ST7610", showWarnings= FALSE )
+setwd( "~/buckets/b1/exp/ST7610" )
 
 
 #imprimo un pdf con la forma del cluster jerarquico
-pdf( "cluster_jerarquico.pdf" )
+pdf( "cluster_jerarquico52.pdf" )
 plot( hclust.rf )
 dev.off()
 
@@ -137,7 +126,7 @@ dataset[  , .N,  cluster2 ]  #tamaño de los clusters
 
 #grabo el dataset en el bucket, luego debe bajarse a la PC y analizarse
 fwrite( dataset,
-        file= "cluster_de_bajas.txt",
+        file= "cluster_de_bajas52.txt",
         sep= "\t" )
 
 
@@ -150,15 +139,3 @@ dataset[  , mean(ctrx_quarter),  cluster2 ]  #media de la variable  ctrx_quarter
 dataset[  , mean(mtarjeta_visa_consumo),  cluster2 ]
 dataset[  , mean(mcuentas_saldo),  cluster2 ]
 dataset[  , mean(chomebanking_trx),  cluster2 ]
-
-
-#Finalmente grabo el archivo para  Juan Pablo Cadaveira
-#agrego a dataset12 el cluster2  y lo grabo
-
-dataset12[ dataset,
-           on= "numero_de_cliente",
-           cluster2 := i.cluster2 ]
-
-fwrite( dataset12, 
-        file= "cluster_de_bajas_12meses.txt",
-        sep= "\t" )
