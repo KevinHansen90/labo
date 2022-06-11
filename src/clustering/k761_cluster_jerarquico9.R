@@ -32,15 +32,55 @@ dataset  <- na.roughfix( dataset )
 
 #los campos que arbitrariamente decido considerar para el clustering
 #por supuesto, se pueden cambiar
-campos_buenos  <- c( "ctrx_quarter", "cpayroll_trx", "mcaja_ahorro", "mtarjeta_visa_consumo", "ctarjeta_visa_trx",
-                     "mcuentas_saldo", "mrentabilidad_annual", "mprestamos_personales", "mactivos_margen", "mpayroll",
-                     "Visa_mpagominimo", "Master_fechaalta", "cliente_edad", "chomebanking_trx", "Visa_msaldopesos",
-                     "Visa_Fvencimiento", "mrentabilidad", "Visa_msaldototal", "Master_Fvencimiento", "mcuenta_corriente",
-                     "Visa_mpagospesos", "Visa_fechaalta", "mcomisiones_mantenimiento", "Visa_mfinanciacion_limite",
-                     "mtransferencias_recibidas", "cliente_antiguedad", "Visa_mconsumospesos", "Master_mfinanciacion_limite",
-                     "mcaja_ahorro_dolares", "cproductos", "mcomisiones_otras", "thomebanking", "mcuenta_debitos_automaticos",
-                     "mcomisiones", "Visa_cconsumos", "ccomisiones_otras", "Master_status", "mtransferencias_emitidas",
-                     "mpagomiscuentas")
+campos_buenos  <- c( "active_quarter",
+                     "cliente_vip",
+                     "internet",
+                     "cliente_edad",
+                     "cliente_antiguedad",
+                     "mrentabilidad",
+                     "mrentabilidad_annual",
+                     "mcomisiones",
+                     "mactivos_margen",
+                     "mpasivos_margen",
+                     "cproductos",
+                     "mcuenta_corriente",
+                     "mcaja_ahorro",
+                     "mcaja_ahorro_dolares",
+                     "ctarjeta_debito_trx",
+                     "mautoservicio",
+                     "ctarjeta_visa_trx",
+                     "mtarjeta_visa_consumo",
+                     "ctarjeta_master_trx",
+                     "mtarjeta_master_consumo",
+                     "mprestamos_personales",
+                     "mprestamos_prendarios",
+                     "mprestamos_hipotecarios",
+                     "mplazo_fijo_dolares",
+                     "mplazo_fijo_pesos",
+                     "minversion1_pesos",
+                     "minversion1_dolares",
+                     "cpayroll_trx",
+                     "mpayroll",
+                     "mcuenta_debitos_automaticos",
+                     "mpagomiscuentas",
+                     "ctransferencias_recibidas",
+                     "mtransferencias_recibidas",
+                     "ctransferencias_emitidas",
+                     "mtransferencias_emitidas",
+                     "cextraccion_autoservicio",
+                     "ccallcenter_trx",
+                     "chomebanking_trx",
+                     "ccajas_trx",
+                     "ctrx_quarter",
+                     "cmobile_app_trx",
+                     "Master_status",
+                     "Master_mconsumospesos",
+                     "Master_mconsumosdolares",
+                     "Master_mlimitecompra",
+                     "Visa_status",
+                     "Visa_mconsumospesos",
+                     "Visa_mconsumosdolares",
+                     "Visa_mlimitecompra")
 
 
 
@@ -73,7 +113,7 @@ dev.off()
 h <- 20
 distintos <- 0
 
-while(  h>0  &  !( distintos >=6 & distintos <=7 ) )
+while(  h>0  &  !( distintos >=8 & distintos <=9 ) )
 {
   h <- h - 1 
   rf.cluster  <- cutree( hclust.rf, h)
@@ -92,7 +132,7 @@ dataset[  , .N,  cluster2 ]  #tamaño de los clusters
 
 #grabo el dataset en el bucket, luego debe bajarse a la PC y analizarse
 fwrite( dataset,
-        file= "cluster_de_bajas.txt",
+        file= "cluster_de_bajas9.txt",
         sep= "\t" )
 
 
