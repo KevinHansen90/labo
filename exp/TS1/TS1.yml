@@ -5,10 +5,10 @@ googlecloud:
 
 
 experiment:
-  script: "src/completo/k921_TS_generico.r"
+  script: "src/completo/z921_TS_generico.r"
   restart: FALSE
   name: "exp"
-  requires: [ "FE8120K" ]
+  requires: [ "FE8120" ]
 
 
 param:

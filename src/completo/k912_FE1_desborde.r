@@ -271,6 +271,7 @@ AgregarVariables  <- function( dataset )
   dataset[  , plazo_fijo_total  := mplazo_fijo_dolares+mplazo_fijo_pesos ]
   dataset[  , inversiones_sin_pf  := minversion1_pesos+minversion1_dolares+minversion2 ]
   dataset[  , plata_con_banco := mcuentas_saldo+consumos_tarjetas_total+prestamos_total+plazo_fijo_total+inversiones_sin_pf]
+  dataset[  , trxmes  := (cproductos+ctarjeta_debito_trx+ctarjeta_visa_trx+ctarjeta_master_trx+cpayroll_trx+cpayroll2_trx+cforex+ccallcenter_trx+chomebanking_trx+ccajas_trx+catm_trx+catm_trx_other+cmobile_app_trx) ]
   
   
   dataset[  , platabanco_sobre_antiguedad  := plata_con_banco / cliente_antiguedad ]
@@ -306,7 +307,6 @@ AgregarVariables  <- function( dataset )
   dataset[  , rentabilidad_normalizada_sobre_balance_cliente  := mrent_normalizada/balance_cliente ]
   dataset[  , plata_con_banco_sobre_balance_cliente  := plata_con_banco/balance_cliente ]
   
-  dataset[  , trxmes  := (cproductos+ctarjeta_debito_trx+ctarjeta_visa_trx+ctarjeta_master_trx+cpayroll_trx+cpayroll2_trx+cforex+ccallcenter_trx+chomebanking_trx+ccajas_trx+catm_trx+catm_trx_other+cmobile_app_trx) ]
   dataset[  , trxmes_sobre_trxq  := trxmes / ctrx_quarter ]
   
   dataset[  , platabanco_sobre_trxmes  := plata_con_banco / trxmes ]
