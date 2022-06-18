@@ -627,6 +627,21 @@ if( PARAM$variablesmanuales )  AgregarVariables( dataset )
 
 cols_lagueables  <- copy( setdiff( colnames(dataset), PARAM$const$campos_fijos ) )
 
+for( i in 1:length( PARAM$lag ) )
+{
+  if( PARAM$lag[i] )
+  {
+    #veo si tengo que ir agregando variables
+    if( PARAM$acumulavars )  cols_lagueables  <- setdiff( colnames(dataset), PARAM$const$campos_fijos )
+    
+    cols_lagueables  <- intersect( colnames(dataset), cols_lagueables )
+    Lags( cols_lagueables, i, PARAM$delta[ i ] )   #calculo los lags de orden  i
+    
+    #elimino las variables poco importantes, para hacer lugar a las importantes
+    if( PARAM$canaritosratio[ i ] > 0 )  CanaritosImportancia( canaritos_ratio= unlist(PARAM$canaritosratio[ i ]) )
+  }
+}
+
 if( PARAM$tendenciaYmuchomas2$correr ) 
 {
   p  <- PARAM$tendenciaYmuchomas2
@@ -747,10 +762,10 @@ for( i in 1:length( PARAM$lag ) )
   {
     #veo si tengo que ir agregando variables
     if( PARAM$acumulavars )  cols_lagueables  <- setdiff( colnames(dataset), PARAM$const$campos_fijos )
-
+    
     cols_lagueables  <- intersect( colnames(dataset), cols_lagueables )
     Lags( cols_lagueables, i, PARAM$delta[ i ] )   #calculo los lags de orden  i
-
+    
     #elimino las variables poco importantes, para hacer lugar a las importantes
     if( PARAM$canaritosratio[ i ] > 0 )  CanaritosImportancia( canaritos_ratio= unlist(PARAM$canaritosratio[ i ]) )
   }
