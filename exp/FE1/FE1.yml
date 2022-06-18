@@ -1,0 +1,109 @@
+googlecloud:
+  RAM:   128
+  vCPU:    8
+  disk:  256
+
+
+experiment:
+  script: "src/completo/z912_FE_desborde.r"
+  restart: FALSE
+  name: "exp"
+  requires: [ "DT0001" ]
+
+
+param:
+  dummiesNA: FALSE
+
+  corregir: TRUE    #se se corrige los campos/foto_mes  MALOS
+  variablesdrift: [] #variables que se eliminan porque estan mal en el futuro
+  
+  variablesmanuales: TRUE
+
+  acumulavars: TRUE   #a lo nuevo lo va aplicando
+
+  tendenciaYmuchomas2: 
+    correr: TRUE #Great power comes with great responsability
+    ventana: 2
+    tendencia: TRUE
+    minimo:    FALSE
+    maximo:    FALSE
+    promedio:  TRUE
+    ratioavg:  FALSE
+    ratiomax:  FALSE
+
+  tendenciaYmuchomas3: 
+    correr: TRUE #Great power comes with great responsability
+    ventana: 3
+    tendencia: TRUE
+    minimo:    FALSE
+    maximo:    FALSE
+    promedio:  TRUE
+    ratioavg:  FALSE
+    ratiomax:  FALSE
+
+  tendenciaYmuchomas4: 
+    correr: TRUE #Great power comes with great responsability
+    ventana: 4
+    tendencia: TRUE
+    minimo:    FALSE
+    maximo:    FALSE
+    promedio:  TRUE
+    ratioavg:  FALSE
+    ratiomax:  FALSE
+
+  tendenciaYmuchomas5: 
+    correr: TRUE #Great power comes with great responsability
+    ventana: 5
+    tendencia: TRUE
+    minimo:    FALSE
+    maximo:    FALSE
+    promedio:  TRUE
+    ratioavg:  FALSE
+    ratiomax:  FALSE    
+
+  tendenciaYmuchomas6: 
+    correr: TRUE #Great power comes with great responsability
+    ventana: 6
+    tendencia: TRUE
+    minimo:    FALSE
+    maximo:    FALSE
+    promedio:  TRUE
+    ratioavg:  FALSE
+    ratiomax:  FALSE 
+
+  tendenciaYmuchomas12: 
+    correr: TRUE #Great power comes with great responsability
+    ventana: 12
+    tendencia: TRUE
+    minimo:    FALSE
+    maximo:    FALSE
+    promedio:  TRUE
+    ratioavg:  FALSE
+    ratiomax:  FALSE 
+
+  #lags y sus deltas , 6 posiciones
+  lag:   [ TRUE, TRUE, TRUE, TRUE, TRUE, TRUE ]
+  delta: [ TRUE, TRUE, TRUE, TRUE, TRUE, TRUE ]
+  canaritosratio: [ 1, 1, 1, 1, 1, 1 ]
+
+  tony:  TRUE
+
+
+  files:
+    input:
+      dentrada: [ "dataset" ]
+    output:
+      dsalida: "paquete_premium_ext.csv.gz"
+
+  const:
+    clase: "clase_ternaria"
+    futuro: [ 202101 ]
+    campos_sort:  [ "numero_de_cliente", "foto_mes" ]   #por donde hago el sort inicial
+    campos_fijos: [ "numero_de_cliente", "foto_mes", "mes", "clase_ternaria" ]
+    modelo:
+
+
+environment:
+  repo_dir: "~/labo/"
+  exp_dir:  "~/buckets/b1/exp/"
+  catalog:  "catalogo.txt"
