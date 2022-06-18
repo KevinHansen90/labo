@@ -302,7 +302,7 @@ AgregarVariables  <- function( dataset )
   dataset[  , inversiones_sobre_saldo  := inversiones_total / mcuentas_saldo ]
   dataset[  , inversiones_sobre_platabanco  := inversiones_total / plata_con_banco ]
   dataset[  , inversiones_por_trxmes  := inversiones_total * trxmes ]
-  dataset[  , balance_cliente  := prestamos_total+inversiones_total-consumos_tarjeta_total-plazo_fijo_total ]
+  dataset[  , balance_cliente  := prestamos_total+inversiones_total-consumos_tarjetas_total-plazo_fijo_total ]
   dataset[  , mrent_sobre_balance_cliente  := mrentabilidad/balance_cliente ]
   dataset[  , rentabilidad_normalizada_sobre_balance_cliente  := mrent_normalizada/balance_cliente ]
   dataset[  , plata_con_banco_sobre_balance_cliente  := plata_con_banco/balance_cliente ]
