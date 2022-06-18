@@ -307,7 +307,7 @@ AgregarVariables  <- function( dataset )
   dataset[  , plata_con_banco_sobre_balance_cliente  := plata_con_banco/balance_cliente ]
   
   dataset[  , trxmes  := (cproductos+ctarjeta_debito_trx+ctarjeta_visa_trx+ctarjeta_master_trx+cpayroll_trx+cpayroll2_trx+cforex+ccallcenter_trx+chomebanking_trx+ccajas_trx+catm_trx+catm_trx_other+cmobile_app_trx) ]
-  dataset[  , trxmes_sobre_trxq  := trx_mes / ctrx_quarter ]
+  dataset[  , trxmes_sobre_trxq  := trxmes / ctrx_quarter ]
   
   dataset[  , platabanco_sobre_trxmes  := plata_con_banco / trxmes ]
   dataset[  , rent_normalizada_sobre_trxmes  := mrent_normalizada / trxmes ]
