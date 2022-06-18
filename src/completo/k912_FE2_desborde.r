@@ -246,20 +246,7 @@ AgregarVariables  <- function( dataset )
   dataset[ , mvr_mpagosdolares       := mv_mpagosdolares / mv_mlimitecompra ]
   dataset[ , mvr_mconsumototal       := mv_mconsumototal  / mv_mlimitecompra ]
   dataset[ , mvr_mpagominimo         := mv_mpagominimo  / mv_mlimitecompra ]
-  
-  dataset[  , plata_con_banco := mcuentas_saldo+mtarjeta_visa_consumo+mtarjeta_master_consumo+mprestamos_personales+mprestamos_prendarios+mprestamos_hipotecarios+mplazo_fijo_dolares+mplazo_fijo_pesos+minversion1_pesos+minversion1_dolares+minversion2]
-  dataset[  , platabanco_sobre_antiguedad  := plata_con_banco / cliente_antiguedad ]
-  dataset[  , mpayroll_sobre_saldo  := mpayroll / mcuentas_saldo ]
-  dataset[  , mpayroll_sobre_platabanco  := mpayroll / plata_con_banco ]
-  dataset[  , descubiertos_sobre_saldo  := (mdescubierto_preacordado) / mcuentas_saldo ]
-  dataset[  , mrent_sobre_mrentannual  := mrentabilidad / mrentabilidad_annual ]
-  dataset[  , mrent_sobre_antiguedad  := mrentabilidad / cliente_antiguedad ]
-  dataset[  , inversiones_sobre_saldo  := (mplazo_fijo_pesos+mplazo_fijo_dolares+minversion1_pesos+minversion1_dolares+minversion2) / mcuentas_saldo ]
-  dataset[  , inversiones_sobre_platabanco  := (mplazo_fijo_pesos+mplazo_fijo_dolares+minversion1_pesos+minversion1_dolares+minversion2) / plata_con_banco ]
-  dataset[  , trxmes  := (cproductos+ctarjeta_debito_trx+ctarjeta_visa_trx+ctarjeta_master_trx+cpayroll_trx+cpayroll2_trx+cforex+ccallcenter_trx+chomebanking_trx+ccajas_trx+catm_trx+catm_trx_other+cmobile_app_trx) ]
-  dataset[  , trxmes_sobre_trxq  := (cproductos+ctarjeta_debito_trx+ctarjeta_visa_trx+ctarjeta_master_trx+cpayroll_trx+cpayroll2_trx+cforex+ccallcenter_trx+chomebanking_trx+ccajas_trx+catm_trx+catm_trx_other+cmobile_app_trx) / ctrx_quarter ]
-  dataset[  , platabanco_sobre_trxmes  := plata_con_banco / trxmes ]
-  
+
   #Aqui debe usted agregar sus propias nuevas variables
 
   #valvula de seguridad para evitar valores infinitos
