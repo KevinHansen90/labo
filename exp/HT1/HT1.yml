@@ -7,15 +7,15 @@ googlecloud:
 
 
 experiment:
-  script: "src/completo/k931_HT_lightgbm.r"
+  script: "src/completo/z931_HT_lightgbm.r"
   restart: TRUE
   name: "exp"
-  requires:   [ "TS8210K" ]
+  requires:   [ "TS8210" ]
 
 
 param:
   algoritmo:  "lightgbm"
-  semilla: 111599
+  semilla: 102191
   crossvalidation: FALSE
   crossvalidation_folds: 5
   validate: FALSE
@@ -30,7 +30,7 @@ param:
   lightgbm:
 
     learning_rate:      [ 0.02, 0.3]
-    feature_fraction:   [ 0.1, 0.5 ]
+    feature_fraction:   [ 0.1, 1.0 ]
     num_leaves:         [ 16, 1024, "integer" ]
     min_data_in_leaf:   [  0, 8000, "integer" ]
 
@@ -45,7 +45,7 @@ param:
     max_depth:  -1                   # [ 6  ,  12 ]  #pero es preferible dejarlo en -1 como esta
     max_bin:     31                  #dejarlo fijo en 31, los scripts no estan preparados para que esto cambie
     
-    seed: 111599                     #podrian poner su propia semilla, asi sienten que la corrida les pertenece
+    seed: 999983                     #podrian poner su propia semilla, asi sienten que la corrida les pertenece
     extra_trees: FALSE
 
     drop_rate: 0.1                   # [ 0.03,   1.0]  solo cuando  boosting: dart

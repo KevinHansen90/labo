@@ -644,7 +644,6 @@ if( PARAM$tendenciaYmuchomas2$correr )
 
 }
 
-cols_lagueables  <- intersect( cols_lagueables,  colnames(dataset) )
 
 #Rankea las variables dentro de cada mes
 setorder( dataset, foto_mes, numero_de_cliente )
@@ -682,8 +681,6 @@ if( PARAM$tendenciaYmuchomas3$correr )
   
 }
 
-cols_lagueables  <- intersect( cols_lagueables,  colnames(dataset) )
-
 #Rankea las variables dentro de cada mes
 setorder( dataset, foto_mes, numero_de_cliente )
 Rankeador( cols_lagueables )
@@ -720,7 +717,6 @@ if( PARAM$tendenciaYmuchomas4$correr )
   
 }
 
-cols_lagueables  <- intersect( cols_lagueables,  colnames(dataset) )
 
 #Rankea las variables dentro de cada mes
 setorder( dataset, foto_mes, numero_de_cliente )
@@ -758,8 +754,6 @@ if( PARAM$tendenciaYmuchomas5$correr )
   
 }
 
-cols_lagueables  <- intersect( cols_lagueables,  colnames(dataset) )
-
 #Rankea las variables dentro de cada mes
 setorder( dataset, foto_mes, numero_de_cliente )
 Rankeador( cols_lagueables )
@@ -795,8 +789,6 @@ if( PARAM$tendenciaYmuchomas6$correr )
   )
   
 }
-
-cols_lagueables  <- intersect( cols_lagueables,  colnames(dataset) )
 
 #Rankea las variables dentro de cada mes
 setorder( dataset, foto_mes, numero_de_cliente )
@@ -834,7 +826,6 @@ if( PARAM$tendenciaYmuchomas12$correr )
   
 }
 
-cols_lagueables  <- intersect( cols_lagueables,  colnames(dataset) )
 
 #Rankea las variables dentro de cada mes
 setorder( dataset, foto_mes, numero_de_cliente )
