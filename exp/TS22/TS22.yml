@@ -5,14 +5,14 @@ googlecloud:
 
 
 experiment:
-  script: "src/completo/z921_TS_generico.r"
+  script: "src/completo/k921_TS_generico.r"
   restart: FALSE
   name: "exp"
-  requires: [ "FE8120" ]
+  requires: [ "FE2" ]
 
 
 param:
-  semilla: 102191
+  semilla: 111599
 
   #donde aplico el modelo final, los datos sin clase
   future:
@@ -27,9 +27,9 @@ param:
   train:
     periodos: [ ]
     rango:
-      desde:  202001
-      hasta:  202009
-    excluir: [ 202006 ]
+      desde:  202008
+      hasta:  202010
+    excluir: [ ]
     undersampling: [ ]  #ATENCION  sin undersampling
 
   #donde valido
@@ -54,9 +54,9 @@ param:
   train_final:
     periodos: [ ]
     rango:
-      desde:  202001
+      desde:  202008
       hasta:  202011
-    excluir: [ 202006 ]
+    excluir: [ ]
     undersampling: [  ]
     
 

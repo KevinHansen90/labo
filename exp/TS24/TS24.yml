@@ -8,7 +8,7 @@ experiment:
   script: "src/completo/k921_TS_generico.r"
   restart: FALSE
   name: "exp"
-  requires: [ "FE1" ]
+  requires: [ "FE2" ]
 
 
 param:
@@ -25,12 +25,12 @@ param:
 
   #donde entreno
   train:
-    periodos: [ ]
+    periodos: [ 202001,202003,202008,202010 ]
     rango:
-      desde:  202001
-      hasta:  202003
+      desde:  
+      hasta:  
     excluir: [ ]
-    undersampling: [ {clase: "CONTINUA", prob: 0.1 } ]
+    undersampling: [ ]  #ATENCION  sin undersampling
 
   #donde valido
   validate:
@@ -52,12 +52,12 @@ param:
 
   #donde entreno el modelo final
   train_final:
-    periodos: [ ]
+    periodos: [ 202001,202003,202008,202010,202011 ]
     rango:
-      desde:  202001
-      hasta:  202003
-    excluir: [ ]
-    undersampling: [ {clase: "CONTINUA", prob: 0.1 } ]
+      desde:  
+      hasta:  
+    excluir: [  ]
+    undersampling: [  ]
     
 
   files:

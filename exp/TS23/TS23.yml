@@ -8,7 +8,7 @@ experiment:
   script: "src/completo/k921_TS_generico.r"
   restart: FALSE
   name: "exp"
-  requires: [ "FE1" ]
+  requires: [ "FE2" ]
 
 
 param:
@@ -30,7 +30,7 @@ param:
       desde:  202001
       hasta:  202003
     excluir: [ ]
-    undersampling: [ {clase: "CONTINUA", prob: 0.1 } ]
+    undersampling: [ ]  #ATENCION  sin undersampling
 
   #donde valido
   validate:
@@ -55,9 +55,9 @@ param:
     periodos: [ ]
     rango:
       desde:  202001
-      hasta:  202003
-    excluir: [ ]
-    undersampling: [ {clase: "CONTINUA", prob: 0.1 } ]
+      hasta:  202011
+    excluir: [ 202004,202005,202006,202007,202008,202009,202010 ]
+    undersampling: [  ]
     
 
   files:
