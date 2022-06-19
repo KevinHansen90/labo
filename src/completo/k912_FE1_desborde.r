@@ -642,6 +642,8 @@ for( i in 1:length( PARAM$lag ) )
   }
 }
 
+cols_lagueables  <-  intersect( cols_laguables,    colnames( dataset) )
+
 if( PARAM$tendenciaYmuchomas2$correr ) 
 {
   p  <- PARAM$tendenciaYmuchomas2
@@ -660,6 +662,8 @@ if( PARAM$tendenciaYmuchomas2$correr )
 }
 
 CanaritosImportancia()
+
+cols_lagueables  <-  intersect( cols_laguables,    colnames( dataset) )
 
 if( PARAM$tendenciaYmuchomas3$correr ) 
 {
@@ -680,6 +684,8 @@ if( PARAM$tendenciaYmuchomas3$correr )
 
 CanaritosImportancia()
 
+cols_lagueables  <-  intersect( cols_laguables,    colnames( dataset) )
+
 if( PARAM$tendenciaYmuchomas4$correr ) 
 {
   p  <- PARAM$tendenciaYmuchomas4
@@ -698,6 +704,8 @@ if( PARAM$tendenciaYmuchomas4$correr )
 }
 
 CanaritosImportancia()
+
+cols_lagueables  <-  intersect( cols_laguables,    colnames( dataset) )
 
 if( PARAM$tendenciaYmuchomas5$correr ) 
 {
@@ -718,6 +726,8 @@ if( PARAM$tendenciaYmuchomas5$correr )
 
 CanaritosImportancia()
 
+cols_lagueables  <-  intersect( cols_laguables,    colnames( dataset) )
+
 if( PARAM$tendenciaYmuchomas6$correr ) 
 {
   p  <- PARAM$tendenciaYmuchomas6
@@ -737,6 +747,29 @@ if( PARAM$tendenciaYmuchomas6$correr )
 
 CanaritosImportancia()
 
+cols_lagueables  <-  intersect( cols_laguables,    colnames( dataset) )
+
+if( PARAM$tendenciaYmuchomas12$correr ) 
+{
+  p  <- PARAM$tendenciaYmuchomas12
+  
+  TendenciaYmuchomas( dataset, 
+                      cols= cols_lagueables,
+                      ventana=   p$ventana,
+                      tendencia= p$tendencia,
+                      minimo=    p$minimo,
+                      maximo=    p$maximo,
+                      promedio=  p$promedio,
+                      ratioavg=  p$ratioavg,
+                      ratiomax=  p$ratiomax
+  )
+  
+}
+
+CanaritosImportancia()
+
+cols_lagueables  <-  intersect( cols_laguables,    colnames( dataset) )
+
 for( i in 1:length( PARAM$lag ) )
 {
   if( PARAM$lag[i] )
@@ -754,11 +787,15 @@ for( i in 1:length( PARAM$lag ) )
 
 CanaritosImportancia()
 
+cols_lagueables  <-  intersect( cols_laguables,    colnames( dataset) )
+
 #Rankea las variables dentro de cada mes
 setorder( dataset, foto_mes, numero_de_cliente )
 Rankeador( cols_lagueables )
 
 CanaritosImportancia()
+
+cols_lagueables  <-  intersect( cols_laguables,    colnames( dataset) )
 
 #dejo la clase como ultimo campo
 nuevo_orden  <- c( setdiff( colnames( dataset ) , PARAM$const$clase ) , PARAM$const$clase )

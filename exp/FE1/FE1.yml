@@ -71,6 +71,15 @@ param:
     ratioavg:  TRUE
     ratiomax:  TRUE 
 
+  tendenciaYmuchomas12: 
+    correr: TRUE #Great power comes with great responsability
+    ventana: 12
+    tendencia: TRUE
+    minimo:    TRUE
+    maximo:    TRUE
+    promedio:  TRUE
+    ratioavg:  TRUE
+    ratiomax:  TRUE 
 
   #lags y sus deltas , 6 posiciones
   lag:   [ TRUE, TRUE, TRUE, TRUE, TRUE, TRUE ]
