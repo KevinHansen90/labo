@@ -737,25 +737,6 @@ if( PARAM$tendenciaYmuchomas6$correr )
 
 CanaritosImportancia()
 
-if( PARAM$tendenciaYmuchomas12$correr ) 
-{
-  p  <- PARAM$tendenciaYmuchomas12
-  
-  TendenciaYmuchomas( dataset, 
-                      cols= cols_lagueables,
-                      ventana=   p$ventana,
-                      tendencia= p$tendencia,
-                      minimo=    p$minimo,
-                      maximo=    p$maximo,
-                      promedio=  p$promedio,
-                      ratioavg=  p$ratioavg,
-                      ratiomax=  p$ratiomax
-  )
-  
-}
-
-CanaritosImportancia()
-
 for( i in 1:length( PARAM$lag ) )
 {
   if( PARAM$lag[i] )
