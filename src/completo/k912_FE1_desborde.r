@@ -627,6 +627,12 @@ if( PARAM$variablesmanuales )  AgregarVariables( dataset )
 
 cols_lagueables  <- copy( setdiff( colnames(dataset), PARAM$const$campos_fijos ) )
 
+Tony(cols_lagueables)
+
+CanaritosImportancia()
+
+cols_lagueables  <-  intersect( cols_laguables,    colnames( dataset) )
+
 for( i in 1:length( PARAM$lag ) )
 {
   if( PARAM$lag[i] )
