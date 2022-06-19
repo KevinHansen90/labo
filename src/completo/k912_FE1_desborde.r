@@ -648,7 +648,7 @@ for( i in 1:length( PARAM$lag ) )
   }
 }
 
-cols_lagueables  <-  intersect( cols_laguebles,    colnames( dataset) )
+cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
 
 if( PARAM$tendenciaYmuchomas2$correr ) 
 {
