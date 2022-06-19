@@ -771,43 +771,6 @@ for( i in 1:length( PARAM$lag ) )
   }
 }
 
-if( PARAM$tendenciaYmuchomas3$correr ) 
-{
-  p  <- PARAM$tendenciaYmuchomas3
-  
-  TendenciaYmuchomas( dataset, 
-                      cols= cols_lagueables,
-                      ventana=   p$ventana,
-                      tendencia= p$tendencia,
-                      minimo=    p$minimo,
-                      maximo=    p$maximo,
-                      promedio=  p$promedio,
-                      ratioavg=  p$ratioavg,
-                      ratiomax=  p$ratiomax
-  )
-  
-}
-
-CanaritosImportancia()
-
-
-if( PARAM$tendenciaYmuchomas6$correr ) 
-{
-  p  <- PARAM$tendenciaYmuchomas6
-  
-  TendenciaYmuchomas( dataset, 
-                      cols= cols_lagueables,
-                      ventana=   p$ventana,
-                      tendencia= p$tendencia,
-                      minimo=    p$minimo,
-                      maximo=    p$maximo,
-                      promedio=  p$promedio,
-                      ratioavg=  p$ratioavg,
-                      ratiomax=  p$ratiomax
-  )
-  
-}
-
 CanaritosImportancia()
 
 #Rankea las variables dentro de cada mes
