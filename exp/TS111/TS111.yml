@@ -30,7 +30,7 @@ param:
       desde:  202001
       hasta:  202010
     excluir: [ 202006 ]
-    undersampling: [ {clase: "CONTINUA", prob: 0.1 } ]
+    undersampling: [ {clase: "CONTINUA", prob: 0.15 } ]
 
   #donde valido
   validate:
@@ -57,7 +57,7 @@ param:
       desde:  202001
       hasta:  202011
     excluir: [ 202006 ]
-    undersampling: [ {clase: "CONTINUA", prob: 0.1 } ]
+    undersampling: [ {clase: "CONTINUA", prob: 0.15 } ]
     
 
   files:
