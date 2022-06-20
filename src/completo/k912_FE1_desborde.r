@@ -629,8 +629,6 @@ cols_lagueables  <- copy( setdiff( colnames(dataset), PARAM$const$campos_fijos )
 
 Tony(cols_lagueables)
 
-CanaritosImportancia()
-
 cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
 
 for( i in 1:length( PARAM$lag ) )
@@ -647,6 +645,8 @@ for( i in 1:length( PARAM$lag ) )
     if( PARAM$canaritosratio[ i ] > 0 )  CanaritosImportancia( canaritos_ratio= unlist(PARAM$canaritosratio[ i ]) )
   }
 }
+
+cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
 
 Rankeador( cols_lagueables )
 
@@ -731,6 +731,8 @@ for( i in 1:length( PARAM$lag ) )
     if( PARAM$canaritosratio[ i ] > 0 )  CanaritosImportancia( canaritos_ratio= unlist(PARAM$canaritosratio[ i ]) )
   }
 }
+
+cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
 
 #Rankea las variables dentro de cada mes
 Rankeador( cols_lagueables )
