@@ -648,6 +648,7 @@ for( i in 1:length( PARAM$lag ) )
 
 cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
 
+setorder( dataset, foto_mes, numero_de_cliente )
 Rankeador( cols_lagueables )
 
 CanaritosImportancia()
@@ -735,6 +736,7 @@ for( i in 1:length( PARAM$lag ) )
 cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
 
 #Rankea las variables dentro de cada mes
+setorder( dataset, foto_mes, numero_de_cliente )
 Rankeador( cols_lagueables )
 
 CanaritosImportancia()
