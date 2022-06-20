@@ -686,6 +686,8 @@ cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
 setorder( dataset, foto_mes, numero_de_cliente )
 Rankeador( cols_lagueables )
 
+CanaritosImportancia()
+
 cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
 
 #dejo la clase como ultimo campo
