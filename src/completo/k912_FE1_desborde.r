@@ -732,8 +732,6 @@ for( i in 1:length( PARAM$lag ) )
   }
 }
 
-cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
-
 #Rankea las variables dentro de cada mes
 Rankeador( cols_lagueables )
 
