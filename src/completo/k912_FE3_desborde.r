@@ -576,6 +576,8 @@ cols_lagueables  <- copy( setdiff( colnames(dataset), PARAM$const$campos_fijos )
 
 Tony(cols_lagueables)
 
+CanaritosImportancia()
+
 cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
 
 for( i in 1:length( PARAM$lag ) )
@@ -680,7 +682,6 @@ for( i in 1:length( PARAM$lag ) )
 cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
 
 #Rankea las variables dentro de cada mes
-setorder( dataset, foto_mes, numero_de_cliente )
 Rankeador( cols_lagueables )
 
 cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
