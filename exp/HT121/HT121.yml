@@ -10,7 +10,7 @@ experiment:
   script: "src/completo/z931_HT_lightgbm.r"
   restart: TRUE
   name: "exp"
-  requires:   [ "TS11" ]
+  requires:   [ "TS121" ]
 
 
 param:
