@@ -52,9 +52,9 @@ param:
     ratiomax:  FALSE
 
   #lags y sus deltas , 6 posiciones
-  lag:   [ TRUE, TRUE, TRUE, FALSE, FALSE, FALSE ]
-  delta: [ TRUE, TRUE, TRUE, FALSE, FALSE, FALSE ]
-  canaritosratio: [ 0.2, 0.2, 0.2, 0, 0, 0 ]
+  lag:   [ TRUE, FALSE, TRUE, FALSE, FALSE, TRUE ]
+  delta: [ TRUE, FALSE, TRUE, FALSE, FALSE, TRUE ]
+  canaritosratio: [ 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 ]
 
   tony:  TRUE
 

@@ -648,24 +648,9 @@ for( i in 1:length( PARAM$lag ) )
   }
 }
 
-cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
-
-if( PARAM$tendenciaYmuchomas2$correr ) 
-{
-  p  <- PARAM$tendenciaYmuchomas2
-
-  TendenciaYmuchomas( dataset, 
-                      cols= cols_lagueables,
-                      ventana=   p$ventana,
-                      tendencia= p$tendencia,
-                      minimo=    p$minimo,
-                      maximo=    p$maximo,
-                      promedio=  p$promedio,
-                      ratioavg=  p$ratioavg,
-                      ratiomax=  p$ratiomax
-                    )
-
-}
+#Rankea las variables dentro de cada mes
+setorder( dataset, foto_mes, numero_de_cliente )
+Rankeador( cols_lagueables )
 
 CanaritosImportancia()
 
@@ -674,48 +659,6 @@ cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
 if( PARAM$tendenciaYmuchomas3$correr ) 
 {
   p  <- PARAM$tendenciaYmuchomas3
-  
-  TendenciaYmuchomas( dataset, 
-                      cols= cols_lagueables,
-                      ventana=   p$ventana,
-                      tendencia= p$tendencia,
-                      minimo=    p$minimo,
-                      maximo=    p$maximo,
-                      promedio=  p$promedio,
-                      ratioavg=  p$ratioavg,
-                      ratiomax=  p$ratiomax
-  )
-  
-}
-
-CanaritosImportancia()
-
-cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
-
-if( PARAM$tendenciaYmuchomas4$correr ) 
-{
-  p  <- PARAM$tendenciaYmuchomas4
-  
-  TendenciaYmuchomas( dataset, 
-                      cols= cols_lagueables,
-                      ventana=   p$ventana,
-                      tendencia= p$tendencia,
-                      minimo=    p$minimo,
-                      maximo=    p$maximo,
-                      promedio=  p$promedio,
-                      ratioavg=  p$ratioavg,
-                      ratiomax=  p$ratiomax
-  )
-  
-}
-
-CanaritosImportancia()
-
-cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
-
-if( PARAM$tendenciaYmuchomas5$correr ) 
-{
-  p  <- PARAM$tendenciaYmuchomas5
   
   TendenciaYmuchomas( dataset, 
                       cols= cols_lagueables,

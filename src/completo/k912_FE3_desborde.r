@@ -593,6 +593,8 @@ for( i in 1:length( PARAM$lag ) )
   }
 }
 
+Rankeador( cols_lagueables )
+
 CanaritosImportancia()
 
 cols_lagueables  <-  intersect( cols_lagueables,    colnames( dataset) )
