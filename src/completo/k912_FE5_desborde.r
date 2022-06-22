@@ -625,6 +625,7 @@ if( PARAM$variablesmanuales )  AgregarVariables( dataset )
 #--------------------------------------
 #Esta primera parte es muuuy  artesanal  y discutible  ya que hay multiples formas de hacerlo
 
+cols_lagueables  <- copy( setdiff( colnames(dataset), PARAM$const$campos_fijos ) )
 
 Tony(cols_lagueables)
 
